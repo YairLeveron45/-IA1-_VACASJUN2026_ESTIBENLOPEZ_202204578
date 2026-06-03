@@ -1,0 +1,35 @@
+# Carpetas del proyecto
+PRACTICA1/BACKEND/venv/
+PRACTICA1/BACKEND/.venv/
+PRACTICA1/BACKEND/__pycache__/
+PRACTICA1/BACKEND/*.pyc
+PRACTICA1/BACKEND/.env
+PRACTICA1/BACKEND/*.db
+PRACTICA1/BACKEND/logs/
+
+PRACTICA1/FRONTEND/node_modules/
+PRACTICA1/FRONTEND/dist/
+PRACTICA1/FRONTEND/.vite/
+PRACTICA1/FRONTEND/.env
+PRACTICA1/FRONTEND/npm-debug.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.tmp
+temp/
+tmp/
+*.log
+
+# Archivos de compilación
+build/
+dist/

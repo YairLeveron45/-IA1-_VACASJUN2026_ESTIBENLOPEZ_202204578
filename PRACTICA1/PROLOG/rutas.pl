@@ -15,6 +15,12 @@ ciudad(puerto_barrios).
 ciudad(chiquimula).
 ciudad(jalapa).
 ciudad(peten).
+ciudad(miami).
+ciudad(espana).
+ciudad(el_salvador).
+ciudad(santa_rosa).
+ciudad(irtra).
+ciudad(colonia_villa_sol).
 
 % Conexiones directas entre ciudades y su distancia en kilometros.
 conexion(guatemala, antigua, 40).
@@ -32,6 +38,9 @@ conexion(chiquimula, jalapa, 95).
 conexion(jalapa, antigua, 137).
 conexion(peten, huehuetenango, 424).
 conexion(escuintla, puerto_barrios, 350).
+conexion(miami, espana, 58.0).
+conexion(el_salvador, santa_rosa, 60.0).
+conexion(irtra, colonia_villa_sol, 90.0).
 
 % Las carreteras se consideran bidireccionales.
 conectadas(Ciudad1, Ciudad2, Distancia) :-

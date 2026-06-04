@@ -5,6 +5,7 @@ Este modulo encapsula todas las consultas al archivo rutas.pl
 para que los endpoints no tengan que conocer detalles de Prolog.
 """
 
+import unicodedata
 from pathlib import Path
 
 from pyswip import Prolog
@@ -50,7 +51,34 @@ class PrologService:
         Returns:
             str: ciudad en minusculas y con espacios convertidos a guion bajo.
         """
-        return city.strip().lower().replace(" ", "_")
+        normalized = unicodedata.normalize("NFKD", city.strip().lower())
+        ascii_city = normalized.encode("ascii", "ignore").decode("ascii")
+        return ascii_city.replace(" ", "_")
+
+    def _insert_fact_in_block(self, fact: str, predicate: str) -> None:
+        """
+        Persiste un hecho Prolog dentro del bloque de su predicado.
+
+        Args:
+            fact (str): hecho Prolog sin salto de linea final.
+            predicate (str): nombre del predicado, por ejemplo ciudad o conexion.
+        """
+        lines = self.prolog_file.read_text(encoding="utf-8").splitlines()
+        insert_at = None
+
+        for index, line in enumerate(lines):
+            stripped_line = line.strip()
+            # Solo consideramos hechos de primer nivel, no llamadas dentro de reglas.
+            if line == stripped_line and stripped_line.startswith(f"{predicate}("):
+                insert_at = index + 1
+
+        if insert_at is None:
+            raise ValueError(
+                f"No se encontro un bloque para persistir hechos del predicado '{predicate}'."
+            )
+
+        lines.insert(insert_at, fact)
+        self.prolog_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     def _run_query(self, query: str) -> list[dict]:
         """
@@ -142,7 +170,7 @@ class PrologService:
 
     def add_city(self, city: str) -> None:
         """
-        Agrega una ciudad nueva a la base dinamica de Prolog.
+        Agrega una ciudad nueva a la base dinamica de Prolog y la persiste.
 
         Args:
             city (str): nombre de la ciudad.
@@ -151,14 +179,20 @@ class PrologService:
             ValueError: si Prolog no pudo registrar la ciudad.
         """
         normalized_city = self._normalize_city(city)
+
+        if normalized_city in self.get_cities():
+            raise ValueError("No fue posible agregar la ciudad. Revisa si ya existe.")
+
         result = self._run_query(f"agregar_ciudad({normalized_city})")
 
         if not result:
             raise ValueError("No fue posible agregar la ciudad. Revisa si ya existe.")
 
+        self._insert_fact_in_block(f"ciudad({normalized_city}).", "ciudad")
+
     def add_connection(self, origin: str, destination: str, distance: float) -> None:
         """
-        Agrega una conexion nueva a la base dinamica de Prolog.
+        Agrega una conexion nueva a la base dinamica de Prolog y la persiste.
 
         Args:
             origin (str): ciudad de origen.
@@ -180,6 +214,11 @@ class PrologService:
             raise ValueError(
                 "No fue posible agregar la conexion. Verifica ciudades y distancia."
             )
+
+        self._insert_fact_in_block(
+            f"conexion({normalized_origin}, {normalized_destination}, {distance}).",
+            "conexion",
+        )
 
     def _parse_prolog_list(self, prolog_list: object) -> list[str]:
         """

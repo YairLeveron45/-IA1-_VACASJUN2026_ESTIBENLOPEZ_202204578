@@ -200,6 +200,11 @@ button, input { font: inherit; }
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+.card--search {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border: 1px solid #d8e5ff;
+}
+
 .card-header {
   display: flex;
   align-items: center;
@@ -234,6 +239,49 @@ button, input { font: inherit; }
   color: #65676b;
   margin-left: 46px;
   margin-bottom: 12px;
+}
+
+.card-desc--inline {
+  margin-left: 0;
+  margin-bottom: 0;
+  margin-top: 2px;
+}
+
+.search-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 8px;
+  background: #edf3ff;
+  border-radius: 10px;
+  margin: 16px 0;
+}
+
+.search-mode-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: transparent;
+  color: #516072;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.search-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.65);
+  color: #0f172a;
+}
+
+.search-mode-btn.active {
+  background: #ffffff;
+  color: #1877f2;
+  box-shadow: 0 10px 24px rgba(24, 119, 242, 0.12);
 }
 
 .form {
@@ -503,4 +551,5 @@ button, input { font: inherit; }
   .hero { padding: 16px 20px; }
   .grid-layout { padding: 12px 16px; gap: 12px; grid-template-columns: 1fr; }
   .hero-stats { justify-content: flex-start; }
+  .search-mode-switch { grid-template-columns: 1fr; }
 }

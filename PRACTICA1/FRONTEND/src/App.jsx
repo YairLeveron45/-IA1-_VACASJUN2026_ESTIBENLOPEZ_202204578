@@ -156,8 +156,7 @@ function FieldInput({ name, value, onChange, placeholder, type = "text", min, ci
 
 function App() {
   const [cities, setCities] = useState([]);
-  const [bestRouteForm, setBestRouteForm] = useState(initialRouteForm);
-  const [routesForm, setRoutesForm] = useState(initialRouteForm);
+  const [routeForm, setRouteForm] = useState(initialRouteForm);
   const [cityForm, setCityForm] = useState(initialCityForm);
   const [connectionForm, setConnectionForm] = useState(initialConnectionForm);
   const [bestRoute, setBestRoute] = useState(null);
@@ -166,6 +165,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingSection, setLoadingSection] = useState("");
   const [activeTab, setActiveTab] = useState("search");
+  const [searchMode, setSearchMode] = useState("best");
 
   useEffect(() => { loadCities(); }, []);
 
@@ -190,29 +190,28 @@ function App() {
     finally { setLoadingSection(""); }
   }
 
-  async function handleBestRouteSubmit(e) {
+  async function handleRouteSearch(e) {
     e.preventDefault();
-    await withLoading("best-route", async () => {
-      try {
-        const result = await fetchBestRoute(bestRouteForm);
-        setBestRoute(result);
-        setAllRoutes([]);
-        setStatusMessage("Ruta encontrada correctamente.");
-      } catch (err) { 
-        setBestRoute(null);
-        setErrorMessage(err.message); 
-      }
-    });
-  }
+    const loadingKey = searchMode === "best" ? "best-route" : "routes";
 
-  async function handleAllRoutesSubmit(e) {
-    e.preventDefault();
-    await withLoading("routes", async () => {
+    await withLoading(loadingKey, async () => {
       try {
+        if (searchMode === "best") {
+          const result = await fetchBestRoute(routeForm);
+          setBestRoute(result);
+          setAllRoutes([]);
+          setStatusMessage("Ruta más corta encontrada correctamente.");
+          return;
+        }
+
         setBestRoute(null);
-        setAllRoutes(await fetchAllRoutes(routesForm));
+        setAllRoutes(await fetchAllRoutes(routeForm));
         setStatusMessage("Rutas consultadas correctamente.");
-      } catch (err) { setAllRoutes([]); setErrorMessage(err.message); }
+      } catch (err) {
+        setBestRoute(null);
+        setAllRoutes([]);
+        setErrorMessage(err.message);
+      }
     });
   }
 
@@ -288,67 +287,75 @@ function App() {
           </div>
 
           {activeTab === "search" && (
-            <>
-              <section className="card">
-                <div className="card-header">
-                  <div className="card-icon card-icon--cyan">
-                    <IconRoute size={16} />
-                  </div>
-                  <h2>Ruta más corta</h2>
+            <section className="card card--search">
+              <div className="card-header">
+                <div className={`card-icon ${searchMode === "best" ? "card-icon--cyan" : "card-icon--emerald"}`}>
+                  {searchMode === "best" ? <IconRoute size={16} /> : <IconNetwork size={16} />}
                 </div>
-                <p className="card-desc">Encuentra el camino óptimo.</p>
-                <form className="form" onSubmit={handleBestRouteSubmit}>
-                  <label>
-                    <span>Origen</span>
-                    <FieldInput
-                      name="origin" value={bestRouteForm.origin}
-                      onChange={makeHandler(setBestRouteForm)} placeholder="Selecciona una ciudad origen" cities={cities}
-                    />
-                  </label>
-                  <label>
-                    <span>Destino</span>
-                    <FieldInput
-                      name="destination" value={bestRouteForm.destination}
-                      onChange={makeHandler(setBestRouteForm)} placeholder="Selecciona una ciudad destino" cities={cities}
-                    />
-                  </label>
-                  <button type="submit" className="btn--blue" disabled={loadingSection === "best-route"}>
-                    <IconSearch size={14} />
-                    {loadingSection === "best-route" ? "Buscando..." : "Buscar"}
-                  </button>
-                </form>
-              </section>
+                <div>
+                  <h2>{searchMode === "best" ? "Ruta más corta" : "Todas las rutas"}</h2>
+                  <p className="card-desc card-desc--inline">
+                    {searchMode === "best"
+                      ? "Encuentra el camino óptimo entre dos ciudades."
+                      : "Explora todas las rutas disponibles ordenadas por distancia."}
+                  </p>
+                </div>
+              </div>
 
-              <section className="card">
-                <div className="card-header">
-                  <div className="card-icon card-icon--emerald">
-                    <IconNetwork size={16} />
-                  </div>
-                  <h2>Todas las rutas</h2>
-                </div>
-                <p className="card-desc">Ver rutas disponibles ordenadas.</p>
-                <form className="form" onSubmit={handleAllRoutesSubmit}>
-                  <label>
-                    <span>Origen</span>
-                    <FieldInput
-                      name="origin" value={routesForm.origin}
-                      onChange={makeHandler(setRoutesForm)} placeholder="Selecciona una ciudad origen" cities={cities}
-                    />
-                  </label>
-                  <label>
-                    <span>Destino</span>
-                    <FieldInput
-                      name="destination" value={routesForm.destination}
-                      onChange={makeHandler(setRoutesForm)} placeholder="Selecciona una ciudad destino" cities={cities}
-                    />
-                  </label>
-                  <button type="submit" className="btn--teal" disabled={loadingSection === "routes"}>
-                    <IconList size={14} />
-                    {loadingSection === "routes" ? "Cargando..." : "Ver rutas"}
-                  </button>
-                </form>
-              </section>
-            </>
+              <div className="search-mode-switch" role="tablist" aria-label="Modo de búsqueda">
+                <button
+                  type="button"
+                  className={`search-mode-btn ${searchMode === "best" ? "active" : ""}`}
+                  onClick={() => setSearchMode("best")}
+                >
+                  <IconRoute size={14} />
+                  Ruta más corta
+                </button>
+                <button
+                  type="button"
+                  className={`search-mode-btn ${searchMode === "all" ? "active" : ""}`}
+                  onClick={() => setSearchMode("all")}
+                >
+                  <IconList size={14} />
+                  Todas las rutas
+                </button>
+              </div>
+
+              <form className="form" onSubmit={handleRouteSearch}>
+                <label>
+                  <span>Origen</span>
+                  <FieldInput
+                    name="origin"
+                    value={routeForm.origin}
+                    onChange={makeHandler(setRouteForm)}
+                    placeholder="Selecciona una ciudad origen"
+                    cities={cities}
+                  />
+                </label>
+                <label>
+                  <span>Destino</span>
+                  <FieldInput
+                    name="destination"
+                    value={routeForm.destination}
+                    onChange={makeHandler(setRouteForm)}
+                    placeholder="Selecciona una ciudad destino"
+                    cities={cities}
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className={searchMode === "best" ? "btn--blue" : "btn--teal"}
+                  disabled={
+                    loadingSection === "best-route" || loadingSection === "routes"
+                  }
+                >
+                  {searchMode === "best" ? <IconSearch size={14} /> : <IconList size={14} />}
+                  {loadingSection === "best-route" || loadingSection === "routes"
+                    ? (searchMode === "best" ? "Buscando..." : "Cargando...")
+                    : (searchMode === "best" ? "Buscar mejor ruta" : "Ver todas las rutas")}
+                </button>
+              </form>
+            </section>
           )}
 
           {activeTab === "manage" && (

@@ -1,402 +1,257 @@
-# Manual de Usuario - Ruta Más Corta Entre Ciudades
+# Manual de Usuario - Rutas Entre Ciudades
 
-## Tabla de Contenidos
-1. [Introducción](#introducción)
-2. [Requisitos del Sistema](#requisitos-del-sistema)
-3. [Instalación y Ejecución](#instalación-y-ejecución)
-4. [Interfaz de Usuario](#interfaz-de-usuario)
-5. [Funcionalidades](#funcionalidades)
-6. [Ejemplos de Uso](#ejemplos-de-uso)
-7. [Solución de Problemas](#solución-de-problemas)
-
----
-
-## Introducción
-
-**Ruta Más Corta Entre Ciudades** es una aplicación web que permite calcular automáticamente la ruta más corta entre dos ciudades conectadas por carreteras. El sistema utiliza una base de conocimiento en Prolog para determinar las rutas óptimas y permite gestionar nuevas ciudades y conexiones de forma interactiva.
-
-### Características Principales
-- ✅ Búsqueda de ruta más corta entre ciudades
-- ✅ Visualización de todas las rutas posibles
-- ✅ Gestión de ciudades (crear nuevas ciudades)
-- ✅ Gestión de conexiones (agregar nuevas carreteras)
-- ✅ Interfaz moderna e intuitiva
-- ✅ Estadísticas en tiempo real
+## Tabla de contenidos
+1. Introduccion
+2. Requisitos del sistema
+3. Instalacion y ejecucion
+4. Interfaz de usuario
+5. Funcionalidades
+6. Ejemplos de uso
+7. Solucion de problemas
+8. Preguntas frecuentes
 
 ---
 
-## Requisitos del Sistema
+## Introduccion
 
-### Software Necesario
-- **Node.js** (v16 o superior)
-- **Python** (v3.8 o superior)
-- **SWI-Prolog** (última versión)
-- **Git** (opcional, para clonar el repositorio)
+**Rutas Entre Ciudades** es una aplicacion web para consultar rutas entre ciudades y administrar la base de conocimiento usada por Prolog.
 
-### Hardware Mínimo
-- Procesador: Intel Core i3 o equivalente
-- RAM: 2 GB
-- Espacio en disco: 500 MB
-
-### Navegadores Compatibles
-- Chrome/Chromium (v90+)
-- Firefox (v88+)
-- Safari (v14+)
-- Edge (v90+)
+### Caracteristicas principales
+- Busqueda de ruta mas corta entre dos ciudades
+- Visualizacion de todas las rutas posibles
+- Cambio de modo de busqueda desde un solo formulario
+- Alta de nuevas ciudades
+- Alta de nuevas conexiones
+- Persistencia de ciudades y conexiones nuevas en `PROLOG/rutas.pl`
+- Panel de resultados y estadisticas simples
 
 ---
 
-## Instalación y Ejecución
+## Requisitos del sistema
 
-### Paso 1: Configurar el Backend
+### Software necesario
+- Node.js 16 o superior
+- Python 3.8 o superior
+- SWI-Prolog instalado y accesible desde PATH
 
-```bash
-# Navegar a la carpeta del backend
-cd PRACTICA1/BACKEND
+### Navegador recomendado
+- Chrome, Edge o Firefox actuales
 
-# Instalar dependencias de Python
-pip install -r requirements.txt
+---
 
-# Ejecutar el servidor (Puerto 8000)
-python -m uvicorn app.main:app --reload
+## Instalacion y ejecucion
+
+### Backend
+
+```powershell
+cd PRACTICA1\BACKEND
+.\.venv\Scripts\Activate.ps1
 ```
 
-**Resultado esperado:**
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000
-```
 
-### Paso 2: Configurar el Frontend
+### Frontend
 
-```bash
-# En otra terminal, navegar a la carpeta del frontend
-cd PRACTICA1/FRONTEND
-
-# Instalar dependencias de Node.js
+```powershell
+cd PRACTICA1\FRONTEND
 npm install
-
-# Ejecutar el servidor de desarrollo (Puerto 5173)
 npm run dev
 ```
 
-**Resultado esperado:**
-```
-  VITE v4.x.x  ready in xxx ms
+### Acceso
 
-  ➜  Local:   http://localhost:5173/
-```
-
-### Paso 3: Acceder a la Aplicación
-
-1. Abre tu navegador web
-2. Ve a `http://localhost:5173`
-3. ¡La aplicación está lista para usar!
-
-> **Nota:** Asegúrate de tener los dos servidores (backend en 8000 y frontend en 5173) ejecutándose simultáneamente.
+- Frontend: `http://localhost:5173`
+- Backend docs: `http://127.0.0.1:8000/docs`
 
 ---
 
-## Interfaz de Usuario
+## Interfaz de usuario
 
-### Vista General
+### Header principal
+- Muestra el titulo de la aplicacion
+- Presenta el total de ciudades cargadas
+- Muestra la cantidad de rutas en el resultado actual
+![alt text](image-1.png)
 
-**>>> [IMAGEN AQUÍ] Captura de pantalla completa de la aplicación <<<**
 
-*Muestra el header azul, pestañas de búsqueda/gestionar, formularios en el sidebar y panel de resultados*
+### Pestanas principales
+- `Buscar`: consulta rutas
+- `Gestionar`: agrega ciudades y conexiones
 
-### Secciones Principales
+![alt text](image-2.png)
 
-#### 1. **Header Azul (Encabezado)**
-- Título: "Rutas entre ciudades"
-- Descripción: "Consulta recorridos, compara distancias y administra ciudades"
-- **KPIs en vivo:**
-  - Número total de ciudades registradas
-  - Número de rutas consultadas
+### Vista Buscar
+- Usa una sola tarjeta de consulta
+- Tiene un selector para cambiar entre:
+  - `Ruta mas corta`
+  - `Todas las rutas`
 
-#### 2. **Barra de Pestañas**
-- **Buscar**: Acceso a búsquedas de rutas
-- **Gestionar**: Acceso para agregar ciudades y conexiones
+![alt text](image-3.png)
 
-#### 3. **Panel Izquierdo (Sidebar)**
-Contiene los formularios según la pestaña seleccionada:
-- Inputs de selección/texto
-- Botones de envío
-- Descripciones de cada sección
 
-#### 4. **Panel Derecho (Info Panel)**
-Muestra:
-- Ruta más corta encontrada (si existe)
-- Listado de todas las rutas disponibles
-- Mensaje vacío si no hay resultados
-- Estadísticas en tarjetas
+
+### Vista Gestionar
+- Formulario para agregar ciudad
+- Formulario para agregar conexion
+
+![alt text](image-4.png)
+
+### Panel de resultados
+- Muestra la mejor ruta cuando el modo activo es `Ruta mas corta`
+- Muestra una lista de rutas cuando el modo activo es `Todas las rutas`
+- Si no hay resultados, muestra un mensaje vacio
+![alt text](image-5.png)
 
 ---
 
 ## Funcionalidades
 
-### 📍 Pestaña "Buscar"
+### Buscar rutas
 
-#### **Ruta Más Corta**
+#### Ruta mas corta
+1. Abre la pestana `Buscar`.
+![alt text](image-6.png)
+2. Selecciona el modo `Ruta mas corta`.
+![alt text](image-7.png)
+3. Elige ciudad de `Origen`.
+![alt text](image-8.png)
+4. Elige ciudad de `Destino`.
+![alt text](image-9.png)
+5. Pulsa `Buscar mejor ruta`.
+![alt text](image-10.png)
 
-Encuentra automáticamente el camino óptimo entre dos ciudades.
+Resultado esperado:
+- Se muestra una sola ruta en el panel derecho.
+- Se muestra la distancia total en kilometros.
+![alt text](image-11.png)
 
-**Pasos:**
-1. Haz clic en la pestaña **"Buscar"**
-2. En la sección "Ruta más corta", selecciona:
-   - **Origen**: Ciudad de salida
-   - **Destino**: Ciudad de llegada
-3. Haz clic en **"Buscar"**
 
-**Resultado:**
-El panel derecho mostrará:
-- Las ciudades por las que pasarás (en badges azules)
-- La distancia total en kilómetros
-- Un ícono de regla junto a la distancia
+#### Todas las rutas
+1. Abre la pestana `Buscar`.
+![alt text](image-12.png)
+2. Selecciona el modo `Todas las rutas`.
+![alt text](image-13.png)
+3. Elige ciudad de `Origen`.
+![alt text](image-14.png)
+4. Elige ciudad de `Destino`.
+![alt text](image-15.png)
+5. Pulsa `Ver todas las rutas`.
+![alt text](image-18.png)
 
-**>>> [IMAGEN AQUÍ] Pantalla con resultado de ruta más corta <<<**
-*Muestra el recorrido: Guatemala → Escuintla → Puerto Barrios con la distancia*
+Resultado esperado:
+- Se muestra un listado ordenado por distancia.
+- Cada resultado incluye recorrido y distancia total.
+![alt text](image-17.png)
 
----
 
-#### **Todas las Rutas**
 
-Visualiza todas las rutas posibles entre dos ciudades ordenadas por distancia.
+### Agregar ciudad
+1. Abre la pestana `Gestionar`.
+![alt text](image-20.png)
+2. En `Agregar ciudad`, escribe el nombre.
+![alt text](image-21.png)
+3. Pulsa `Agregar`.
+![alt text](image-22.png)
 
-**Pasos:**
-1. En la sección "Todas las rutas", selecciona:
-   - **Origen**: Ciudad de partida
-   - **Destino**: Ciudad final
-2. Haz clic en **"Ver rutas"**
 
-**Resultado:**
-El panel derecho mostrará:
-- Cada ruta en una tarjeta
-- Ciudades representadas como badges
-- Distancia total de cada ruta en color verde
-- Un contador: "Rutas disponibles (X)"
+Resultado esperado:
+- Aparece mensaje de exito.
+- La ciudad se agrega al listado de ciudades.
+- La ciudad se guarda en `PROLOG/rutas.pl`.
 
-**>>> [IMAGEN AQUÍ] Pantalla con listado de rutas <<<**
-*Muestra múltiples rutas con sus distancias y el badge de cada ciudad*
+### Agregar conexion
+1. Abre la pestana `Gestionar`.
+![alt text](image-19.png)
+2. En `Agregar conexion`, selecciona:
+   - `Origen`
+   - `Destino`
+   - `Distancia`
 
-> **Nota:** Si no existe ruta entre las ciudades, verás un mensaje: "Información de rutas - Busca o carga rutas para verlas aquí"
+![alt text](image-23.png)
+3. Pulsa `Agregar`.
+![alt text](image-24.png)
 
----
+Resultado esperado:
+- Aparece mensaje de exito.
+- La conexion queda disponible para nuevas consultas.
+- La conexion se guarda en `PROLOG/rutas.pl`.
 
-### ⚙️ Pestaña "Gestionar"
+### Persistencia
 
-#### **Agregar Ciudad**
+Las altas nuevas ya no se pierden al reiniciar el backend:
+- `POST /cities` agrega la ciudad en memoria y tambien la escribe en `PROLOG/rutas.pl`
+- `POST /connections` agrega la conexion en memoria y tambien la escribe en `PROLOG/rutas.pl`
 
-Crea una nueva ciudad en la base de conocimiento.
-
-**Pasos:**
-1. Haz clic en la pestaña **"Gestionar"**
-2. En la sección "Agregar ciudad", ingresa:
-   - **Nombre**: Nombre de la nueva ciudad
-3. Haz clic en **"Agregar"**
-
-**Validaciones:**
-- El nombre no puede estar vacío
-- Se mostrará un mensaje de éxito o error
-
-**Mensajes:**
-- ✅ **Éxito (verde):** "Ciudad agregada correctamente"
-- ❌ **Error (rojo):** Se mostrará el motivo del error
-
-**>>> [IMAGEN AQUÍ] Pantalla con formulario de agregar ciudad y mensaje de éxito <<<**
-
----
-
-#### **Agregar Conexión**
-
-Establece una nueva carretera entre dos ciudades.
-
-**Pasos:**
-1. En la sección "Agregar conexión", completa:
-   - **Origen**: Ciudad de inicio de la carretera
-   - **Destino**: Ciudad destino de la carretera
-   - **Distancia (km)**: Distancia en kilómetros (número entero)
-2. Haz clic en **"Agregar"**
-
-**Validaciones:**
-- Las ciudades deben existir
-- La distancia debe ser mayor a 0
-- No se pueden conectar dos ciudades iguales
-
-**Mensajes:**
-- ✅ **Éxito:** "Conexión agregada correctamente"
-- ❌ **Error:** Se mostrará el motivo del error
-
-**>>> [IMAGEN AQUÍ] Pantalla con formulario de agregar conexión <<<**
+Esto permite que, al iniciar de nuevo el backend, Prolog vuelva a cargar esos datos desde el archivo.
 
 ---
 
-## Ejemplos de Uso
+## Ejemplos de uso
 
-### Ejemplo 1: Buscar Ruta Más Corta
+### Ejemplo 1: Buscar la mejor ruta
+Objetivo: encontrar la mejor ruta de `guatemala` a `puerto_barrios`.
 
-**Objetivo:** Encontrar la ruta más corta de Guatemala a Huehuetenango
+Pasos:
+1. Abre `Buscar`.
+2. Elige `Ruta mas corta`.
+3. Selecciona `guatemala` como origen.
+4. Selecciona `puerto_barrios` como destino.
+5. Pulsa `Buscar mejor ruta`.
 
-**Procedimiento:**
-1. Abre la aplicación en `http://localhost:5173`
-2. Asegúrate de estar en la pestaña **"Buscar"**
-3. En "Ruta más corta":
-   - Origen: Selecciona "Guatemala"
-   - Destino: Selecciona "Huehuetenango"
-4. Haz clic en **"Buscar"**
+### Ejemplo 2: Ver todas las rutas
+Objetivo: ver todas las rutas de `escuintla` a `puerto_barrios`.
 
-**Resultado Esperado:**
-```
-Recorrido: Guatemala → Antigua → Chichicastenango → Huehuetenango
-Distancia: 180 km en total
-```
+Pasos:
+1. Abre `Buscar`.
+2. Elige `Todas las rutas`.
+3. Selecciona origen y destino.
+4. Pulsa `Ver todas las rutas`.
 
-**>>> [IMAGEN AQUÍ] Resultado del búsqueda de ruta más corta <<<**
+### Ejemplo 3: Agregar una ciudad
+Objetivo: agregar `totonicapan`.
 
----
+Pasos:
+1. Abre `Gestionar`.
+2. En `Agregar ciudad`, escribe `totonicapan`.
+3. Pulsa `Agregar`.
 
-### Ejemplo 2: Ver Todas las Rutas
+### Ejemplo 4: Agregar una conexion
+Objetivo: conectar `totonicapan` con `quetzaltenango` con distancia `45`.
 
-**Objetivo:** Ver todas las formas de llegar de Escuintla a Puerto Barrios
-
-**Procedimiento:**
-1. En la pestaña **"Buscar"**
-2. En "Todas las rutas":
-   - Origen: "Escuintla"
-   - Destino: "Puerto Barrios"
-3. Haz clic en **"Ver rutas"**
-
-**Resultado Esperado:**
-Se mostrará un listado de todas las rutas disponibles con sus distancias
-
-**>>> [IMAGEN AQUÍ] Resultado mostrando listado de rutas <<<**
+Pasos:
+1. Abre `Gestionar`.
+2. Selecciona origen y destino.
+3. Escribe `45`.
+4. Pulsa `Agregar`.
 
 ---
 
-### Ejemplo 3: Agregar Nueva Ciudad
+## Solucion de problemas
 
-**Objetivo:** Agregar la ciudad de "Totonicapán" al sistema
+### El backend no responde
+Verifica que este ejecutandose:
 
-**Procedimiento:**
-1. Ve a la pestaña **"Gestionar"**
-2. En "Agregar ciudad":
-   - Nombre: "Totonicapán"
-3. Haz clic en **"Agregar"**
-
-**Resultado Esperado:**
-- Mensaje verde: "Ciudad agregada correctamente"
-- El KPI de "Ciudades" en el header se incrementa en 1
-
-**>>> [IMAGEN AQUÍ] Mensaje de éxito al agregar ciudad <<<**
-
----
-
-### Ejemplo 4: Agregar Conexión Entre Ciudades
-
-**Objetivo:** Conectar Totonicapán con Quetzaltenango con una carretera de 45 km
-
-**Procedimiento:**
-1. En la pestaña **"Gestionar"**
-2. En "Agregar conexión":
-   - Origen: "Totonicapán"
-   - Destino: "Quetzaltenango"
-   - Distancia: 45
-3. Haz clic en **"Agregar"**
-
-**Resultado Esperado:**
-- Mensaje verde: "Conexión agregada correctamente"
-- Ahora la búsqueda de rutas incluye este nuevo tramo
-
-**>>> [IMAGEN AQUÍ] Mensaje de éxito al agregar conexión <<<**
-
----
-
-## Solución de Problemas
-
-### Problema 1: "No se puede conectar al servidor"
-
-**Síntoma:** Error en la consola del navegador
-
-**Causa Posible:**
-- El backend no está ejecutándose en puerto 8000
-- El servidor fue cerrado
-
-**Solución:**
-```bash
-# Verifica que el backend esté corriendo
-python -m uvicorn app.main:app --reload
+```powershell
+cd PRACTICA1\BACKEND
+.\.venv\Scripts\Activate.ps1
 ```
 
----
+### El frontend no carga
+Verifica que Vite este levantado:
 
-### Problema 2: "No hay rutas disponibles" entre ciudades
-
-**Síntoma:** Se muestra mensaje vacío al buscar
-
-**Causa Posible:**
-- Las ciudades seleccionadas no están conectadas
-- Las ciudades no existen
-
-**Solución:**
-1. Verifica que ambas ciudades existan
-2. Agrega una conexión entre ellas en la pestaña "Gestionar"
-3. Intenta nuevamente
-
----
-
-### Problema 3: Formularios no responden
-
-**Síntoma:** Los botones no funcionan
-
-**Causa Posible:**
-- Campo obligatorio vacío
-- Datos inválidos
-
-**Solución:**
-- Rellena todos los campos requeridos
-- Para distancia, usa un número entero positivo
-- Verifica que las ciudades existan antes de conectarlas
-
----
-
-### Problema 4: El frontend no carga
-
-**Síntoma:** Error 404 o página en blanco
-
-**Causa Posible:**
-- El servidor de desarrollo no está ejecutándose
-- Puerto 5173 no está disponible
-
-**Solución:**
-```bash
-# Ejecuta el servidor de desarrollo
-cd PRACTICA1/FRONTEND
+```powershell
+cd PRACTICA1\FRONTEND
 npm run dev
 ```
 
----
+### No aparece una ruta
+- Revisa que ambas ciudades existan
+- Revisa que haya conexiones entre ellas
+- Si acabas de crear una conexion, vuelve a intentar la consulta
 
-## Preguntas Frecuentes (FAQ)
-
-**P: ¿Cuántas ciudades puedo agregar?**
-R: No hay límite. El sistema puede gestionar cientos de ciudades sin problemas.
-
-**P: ¿Se guarda la información cuando cierro la aplicación?**
-R: No. Los datos se almacenan solo en la sesión actual. Para datos persistentes, necesitarías una base de datos.
-
-**P: ¿Puedo agregar rutas en ambas direcciones?**
-R: Sí, pero debes agregarlas como dos conexiones separadas (A→B y B→A).
-
-**P: ¿Cuál es la distancia máxima que puedo registrar?**
-R: No hay límite. Puedes usar cualquier número positivo.
-
-**P: ¿Qué pasa si agrego una ciudad duplicada?**
-R: El sistema la rechazará y mostrará un mensaje de error.
+### Error al agregar ciudad o conexion
+- El nombre no debe ir vacio
+- La distancia debe ser mayor que cero
+- La ciudad no debe estar duplicada
+- La conexion debe usar ciudades existentes
 
 ---
-
-## Soporte y Contacto
-
-Si encuentras problemas o tienes sugerencias, contacta al equipo de desarrollo.
-
-**Última actualización:** 3 de junio de 2026
-

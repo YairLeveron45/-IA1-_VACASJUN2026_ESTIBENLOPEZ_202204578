@@ -39,6 +39,8 @@ ciudad(el_salvador).
 ciudad(santa_rosa).
 ciudad(irtra).
 ciudad(colonia_villa_sol).
+ciudad(totonicapan).
+ciudad(villa_nueva).
 
 % ============================================================================
 % HECHOS: CONEXIONES
@@ -70,6 +72,8 @@ conexion(escuintla, puerto_barrios, 350).
 conexion(miami, espana, 58.0).
 conexion(el_salvador, santa_rosa, 60.0).
 conexion(irtra, colonia_villa_sol, 90.0).
+conexion(totonicapan, villa_nueva, 100.0).
+conexion(peten, guatemala, 45.0).
 
 % ============================================================================
 % REGLA: CONEXIONES BIDIRECCIONALES
@@ -180,15 +184,25 @@ agregar_ciudad(Ciudad) :-
     \+ ciudad(Ciudad),
     assertz(ciudad(Ciudad)).
 
+% Indica si ya existe una conexion directa entre dos ciudades,
+% sin importar el orden en el que se consulte.
+conexion_existente(Origen, Destino) :-
+    conexion(Origen, Destino, _).
+conexion_existente(Origen, Destino) :-
+    conexion(Destino, Origen, _).
+
 % Agrega una conexion solo si:
 % 1. ambas ciudades existen
-% 2. la distancia es mayor que cero
-% 3. la conexion exacta aun no existe
+% 2. origen y destino son distintos
+% 3. la distancia es mayor que cero
+% 4. no existe ya una conexion entre ambas ciudades, ni en el mismo
+%    orden ni en el inverso
 %
 % Luego se inserta en memoria usando assertz/1.
 agregar_conexion(Origen, Destino, Distancia) :-
     ciudad(Origen),
     ciudad(Destino),
+    Origen \= Destino,
     Distancia > 0,
-    \+ conexion(Origen, Destino, Distancia),
+    \+ conexion_existente(Origen, Destino),
     assertz(conexion(Origen, Destino, Distancia)).

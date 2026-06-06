@@ -93,6 +93,16 @@ class PrologService:
         """
         return list(self.prolog.query(query))
 
+    def _connection_exists(self, origin: str, destination: str) -> bool:
+        """
+        Verifica si ya existe una conexion directa entre dos ciudades.
+
+        La validacion considera tambien el caso inverso porque las conexiones
+        del sistema se tratan como bidireccionales.
+        """
+        query = f"conexion_existente({origin}, {destination})"
+        return bool(self._run_query(query))
+
     def get_best_route(self, origin: str, destination: str) -> BestRouteResponse:
         """
         Consulta la ruta mas corta entre dos ciudades.
@@ -205,6 +215,15 @@ class PrologService:
         """
         normalized_origin = self._normalize_city(origin)
         normalized_destination = self._normalize_city(destination)
+
+        if normalized_origin == normalized_destination:
+            raise ValueError("El origen y el destino deben ser ciudades distintas.")
+
+        if self._connection_exists(normalized_origin, normalized_destination):
+            raise ValueError(
+                "Ya existe una conexion entre esas ciudades. No se permiten duplicados."
+            )
+
         result = self._run_query(
             "agregar_conexion("
             f"{normalized_origin}, {normalized_destination}, {distance}"

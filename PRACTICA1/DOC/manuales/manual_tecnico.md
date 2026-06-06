@@ -29,8 +29,42 @@ El proyecto implementa una arquitectura de tres capas:
 
 ## Estructura del proyecto
 
+```text
+PRACTICA1/
+|-- FRONTEND/
+|   |-- src/
+|   |   |-- App.jsx
+|   |   |-- api.js
+|   |   |-- main.jsx
+|   |   `-- styles.css
+|   |-- public/
+|   `-- package.json
+|-- BACKEND/
+|   |-- app/
+|   |   |-- api/
+|   |   |   `-- routes.py
+|   |   |-- schemas/
+|   |   |-- services/
+|   |   |   `-- prolog_service.py
+|   |   `-- main.py
+|   |-- tests/
+|   `-- requirements.txt
+|-- PROLOG/
+|   `-- rutas.pl
+|-- DOC/
+|   `-- manuales/
+`-- README.md
+```
 
-![alt text](image.png)
+## Diagrama de arquitectura
+![alt text](image-25.png)
+
+### Lectura del diagrama
+
+- El `frontend` concentra la experiencia del usuario y envia solicitudes HTTP al backend.
+- El `backend` actua como capa de orquestacion: valida entradas, decide que consulta ejecutar y transforma la respuesta.
+- `prolog_service.py` es el puente entre Python y Prolog mediante `PySwip`.
+- `rutas.pl` funciona como base de conocimiento y tambien como persistencia actual del sistema.
 
 ---
 
@@ -83,9 +117,9 @@ Metodos importantes:
 - `get_all_routes(origin, destination)`
 - `add_city(city)`
 - `add_connection(origin, destination, distance)`
-- `_append_fact_to_file(fact)`
+- `_insert_fact_in_block(fact, predicate)`
 
-### Persistencai
+### Persistencia
 La persistencia se implemento en el servicio de backend, no en Prolog directamente. Eso simplifica el flujo porque el backend decide cuando anexar hechos al archivo.
 
 ---
@@ -277,8 +311,17 @@ Entrada:
 - despues escribe el hecho nuevo en `PROLOG/rutas.pl`
 
 Implementacion actual en `prolog_service.py`:
-- `_append_fact_to_file(...)` abre el archivo en modo append
-- `add_city(...)` escribe `ciudad(nombre).`
-- `add_connection(...)` escribe `conexion(origen, destino, distancia).`
+- `_insert_fact_in_block(...)` localiza el bloque correcto dentro de `rutas.pl`
+- `add_city(...)` registra la ciudad en memoria y luego la persiste como hecho `ciudad/1`
+- `add_connection(...)` registra la conexion en memoria y luego la persiste como hecho `conexion/3`
+
+---
+
+## Riesgos y mejoras futuras
+
+- La persistencia depende de modificar directamente `PROLOG/rutas.pl`, lo cual funciona para la practica pero no escala bien si hay muchos usuarios o escrituras concurrentes.
+- El archivo `api.js` usa una URL fija (`http://127.0.0.1:8000`), asi que una mejora natural seria moverla a variables de entorno.
+- El backend centraliza bien la logica de integracion, pero podria agregarse una capa de repositorio o adaptador si en el futuro se incorpora una base de datos relacional.
+- Tambien seria conveniente ampliar las pruebas para cubrir altas de ciudades, conexiones y errores de consulta.
 
 ---

@@ -55,6 +55,7 @@ class PrologService:
         ascii_city = normalized.encode("ascii", "ignore").decode("ascii")
         return ascii_city.replace(" ", "_")
 
+
     def _insert_fact_in_block(self, fact: str, predicate: str) -> None:
         """
         Persiste un hecho Prolog dentro del bloque de su predicado.

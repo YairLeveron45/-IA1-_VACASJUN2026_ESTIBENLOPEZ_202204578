@@ -1,10 +1,28 @@
+% ============================================================================
 % Practica 1
-% Ruta mas corta entre ciudades usando Prolog.
+% Sistema de rutas entre ciudades usando Prolog
+%
+% Este archivo funciona como la base de conocimiento del proyecto.
+% Aqui se definen:
+% 1. Las ciudades disponibles
+% 2. Las conexiones directas entre ciudades y su distancia
+% 3. Las reglas para buscar rutas
+% 4. Las reglas para calcular distancias
+% 5. Las reglas para encontrar la ruta mas corta
+% 6. Las reglas para agregar ciudades y conexiones dinamicamente
+% ============================================================================
 
 :- dynamic ciudad/1.
 :- dynamic conexion/3.
 
-% Ciudades disponibles en la base de conocimiento.
+% ============================================================================
+% HECHOS: CIUDADES
+% Cada hecho ciudad/1 representa una ciudad disponible en el sistema.
+% Ejemplo:
+%   ciudad(guatemala).
+% significa: "la ciudad guatemala existe en la base de conocimiento".
+% ============================================================================
+
 ciudad(guatemala).
 ciudad(antigua).
 ciudad(escuintla).
@@ -22,7 +40,18 @@ ciudad(santa_rosa).
 ciudad(irtra).
 ciudad(colonia_villa_sol).
 
-% Conexiones directas entre ciudades y su distancia en kilometros.
+% ============================================================================
+% HECHOS: CONEXIONES
+% Cada hecho conexion/3 representa una conexion directa entre dos ciudades.
+% Formato:
+%   conexion(Origen, Destino, Distancia).
+%
+% Ejemplo:
+%   conexion(guatemala, antigua, 40).
+% significa: "existe una conexion directa entre guatemala y antigua
+% con una distancia de 40 kilometros".
+% ============================================================================
+
 conexion(guatemala, antigua, 40).
 conexion(guatemala, escuintla, 60).
 conexion(guatemala, coban, 215).
@@ -42,44 +71,86 @@ conexion(miami, espana, 58.0).
 conexion(el_salvador, santa_rosa, 60.0).
 conexion(irtra, colonia_villa_sol, 90.0).
 
-% Las carreteras se consideran bidireccionales.
+% ============================================================================
+% REGLA: CONEXIONES BIDIRECCIONALES
+%
+% Aunque la base de conocimiento almacena una conexion en un solo sentido,
+% esta regla permite que el sistema la considere en ambos sentidos.
+%
+% Ejemplo:
+% Si existe conexion(guatemala, antigua, 40), entonces tambien se podra
+% consultar como si existiera una conexion de antigua a guatemala.
+% ============================================================================
+
 conectadas(Ciudad1, Ciudad2, Distancia) :-
     conexion(Ciudad1, Ciudad2, Distancia).
 conectadas(Ciudad1, Ciudad2, Distancia) :-
     conexion(Ciudad2, Ciudad1, Distancia).
 
-% Ruta directa entre origen y destino.
+% ============================================================================
+% REGLAS DE BUSQUEDA DE RUTAS
+% ============================================================================
+
+% Caso base:
+% Si origen y destino estan conectados directamente, la ruta es simplemente
+% [Origen, Destino].
 ruta(Origen, Destino, [Origen, Destino]) :-
     conectadas(Origen, Destino, _).
 
-% Ruta compuesta evitando repetir ciudades.
+% Caso recursivo:
+% Si no existe una ruta directa suficiente, se inicia una busqueda recursiva.
+% Se comienza con la ciudad de origen como ya visitada para evitar ciclos.
 ruta(Origen, Destino, [Origen | Ruta]) :-
     Origen \= Destino,
     recorrer(Origen, Destino, [Origen], Ruta).
 
+% Caso base del recorrido:
+% Si la ciudad actual esta conectada con el destino y el destino aun no fue
+% visitado, entonces se completa la ruta.
 recorrer(Actual, Destino, Visitadas, [Destino]) :-
     conectadas(Actual, Destino, _),
     \+ member(Destino, Visitadas).
 
+% Caso recursivo del recorrido:
+% 1. Desde la ciudad actual se busca una ciudad siguiente conectada.
+% 2. Esa ciudad siguiente no debe ser el destino todavia.
+% 3. Tampoco debe haberse visitado antes.
+% 4. Se continua la busqueda agregando la nueva ciudad a la lista de visitadas.
+%
+% Esto evita ciclos como:
+% guatemala -> antigua -> guatemala -> antigua ...
 recorrer(Actual, Destino, Visitadas, [Siguiente | Ruta]) :-
     conectadas(Actual, Siguiente, _),
     Siguiente \= Destino,
     \+ member(Siguiente, Visitadas),
     recorrer(Siguiente, Destino, [Siguiente | Visitadas], Ruta).
 
-% Calcula la distancia total de una ruta.
+% ============================================================================
+% CALCULO DE DISTANCIA
+% ============================================================================
+
+% Caso base:
+% Una ruta con una sola ciudad no tiene distancia acumulada.
 distancia_ruta([_], 0).
+
+% Caso recursivo:
+% 1. Toma dos ciudades consecutivas de la ruta.
+% 2. Busca la distancia directa entre ambas.
+% 3. Calcula la distancia del resto de la ruta.
+% 4. Suma ambos valores.
 distancia_ruta([Ciudad1, Ciudad2 | Resto], DistanciaTotal) :-
     conectadas(Ciudad1, Ciudad2, DistanciaTramo),
     distancia_ruta([Ciudad2 | Resto], DistanciaRestante),
     DistanciaTotal is DistanciaTramo + DistanciaRestante.
 
-% Devuelve una ruta valida junto con su distancia total.
+% Esta regla combina la busqueda de una ruta con el calculo de su distancia.
+% Devuelve una ruta valida junto con la distancia total recorrida.
 ruta_con_distancia(Origen, Destino, Ruta, Distancia) :-
     ruta(Origen, Destino, Ruta),
     distancia_ruta(Ruta, Distancia).
 
 % Reune todas las rutas posibles entre dos ciudades.
+% findall/3 recopila todos los resultados que satisfacen la consulta.
 todas_las_rutas(Origen, Destino, Rutas) :-
     findall(
         ruta_distancia(Ruta, Distancia),
@@ -87,7 +158,11 @@ todas_las_rutas(Origen, Destino, Rutas) :-
         Rutas
     ).
 
-% Obtiene la ruta mas corta entre dos ciudades.
+% Obtiene automaticamente la ruta mas corta.
+%
+% setof/3 ordena los resultados por la primera parte del termino
+% Distancia-Ruta, por eso el primer elemento de la lista es la ruta
+% con menor distancia total.
 ruta_mas_corta(Origen, Destino, MejorRuta, MejorDistancia) :-
     setof(
         Distancia-Ruta,
@@ -95,12 +170,22 @@ ruta_mas_corta(Origen, Destino, MejorRuta, MejorDistancia) :-
         [MejorDistancia-MejorRuta | _]
     ).
 
-% Permite agregar una nueva ciudad desde la aplicacion.
+% ============================================================================
+% REGLAS DINAMICAS PARA ACTUALIZAR LA BASE DE CONOCIMIENTO
+% ============================================================================
+
+% Agrega una ciudad solo si todavia no existe.
+% assertz/1 inserta el hecho en memoria al final de la base de conocimiento.
 agregar_ciudad(Ciudad) :-
     \+ ciudad(Ciudad),
     assertz(ciudad(Ciudad)).
 
-% Permite agregar una nueva conexion desde la aplicacion.
+% Agrega una conexion solo si:
+% 1. ambas ciudades existen
+% 2. la distancia es mayor que cero
+% 3. la conexion exacta aun no existe
+%
+% Luego se inserta en memoria usando assertz/1.
 agregar_conexion(Origen, Destino, Distancia) :-
     ciudad(Origen),
     ciudad(Destino),

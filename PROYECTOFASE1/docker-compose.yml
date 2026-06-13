@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: BACKEND/Dockerfile
+    container_name: doctor-byte-backend
+    env_file:
+      - BACKEND/.env
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      ADMIN_ACCESS_TOKEN: ${ADMIN_ACCESS_TOKEN:-doctor-byte-admin-token}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./PROLOG:/workspace/PROLOG
+      - ./BACKEND/app/data:/workspace/BACKEND/app/data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: FRONTEND/Dockerfile
+    container_name: doctor-byte-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./FRONTEND/src:/workspace/FRONTEND/src
+      - ./FRONTEND/index.html:/workspace/FRONTEND/index.html
+      - ./FRONTEND/vite.config.js:/workspace/FRONTEND/vite.config.js

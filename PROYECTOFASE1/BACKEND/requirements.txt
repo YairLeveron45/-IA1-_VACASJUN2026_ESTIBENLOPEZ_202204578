@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pydantic
+pyswip
+python-telegram-bot
+pytest
+requests
+python-dotenv

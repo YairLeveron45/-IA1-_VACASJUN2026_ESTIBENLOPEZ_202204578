@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: smartbot-backend
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - smartbot_data:/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:////data/smartbot.db
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+
+  frontend:
+    image: node:22-alpine
+    container_name: smartbot-frontend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+  bot:
+    build:
+      context: ./backend
+    container_name: smartbot-telegram
+    command: python -m bot.main
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    environment:
+      - API_URL=http://backend:8000
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - DATABASE_URL=sqlite:////data/smartbot.db
+
+volumes:
+  smartbot_data:

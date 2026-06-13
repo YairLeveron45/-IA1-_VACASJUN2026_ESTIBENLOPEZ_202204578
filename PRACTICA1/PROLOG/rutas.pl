@@ -41,6 +41,7 @@ ciudad(irtra).
 ciudad(colonia_villa_sol).
 ciudad(totonicapan).
 ciudad(villa_nueva).
+ciudad(calificacion1).
 
 % ============================================================================
 % HECHOS: CONEXIONES
@@ -74,6 +75,7 @@ conexion(el_salvador, santa_rosa, 60.0).
 conexion(irtra, colonia_villa_sol, 90.0).
 conexion(totonicapan, villa_nueva, 100.0).
 conexion(peten, guatemala, 45.0).
+conexion(guatemala, calificacion1, 100.0).
 
 % ============================================================================
 % REGLA: CONEXIONES BIDIRECCIONALES

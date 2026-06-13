@@ -8,7 +8,6 @@ database/*.db
 frontend/node_modules/
 frontend/dist/
 .pytest_cache/
-app/
 node_modules/
 dist/
 __pycache__/

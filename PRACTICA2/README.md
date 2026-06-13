@@ -1,6 +1,8 @@
 # SmartBot
 
-Sistema de respuestas automatizadas con bot de Telegram, backend FastAPI, frontend React + Vite y base de datos SQLite.
+SmartBot es un sistema de atencion automatizada para consultas frecuentes mediante Telegram. Permite administrar preguntas, respuestas, categorias y configuracion del bot desde un panel web, mientras una API REST en Python consulta la base de datos SQLite para responder mensajes enviados desde el chat o grupo autorizado.
+
+El proyecto integra un backend con FastAPI, un frontend administrativo con React + Vite, un bot de Telegram y ejecucion completa mediante Docker Compose.
 
 ## Estructura
 
@@ -8,7 +10,7 @@ Sistema de respuestas automatizadas con bot de Telegram, backend FastAPI, fronte
 backend/   API REST FastAPI y bot de Telegram
 frontend/  Panel administrativo React + Vite
 database/  Base de datos SQLite local
-docs/      Manual tecnico y manual de usuario
+Documentacion/  Manual tecnico, manual de usuario y capturas
 ```
 
 ## Credenciales del panel

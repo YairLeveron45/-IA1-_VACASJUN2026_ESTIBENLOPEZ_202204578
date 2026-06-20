@@ -7,8 +7,8 @@ import { Brand } from "../components/Brand";
 import { useAuthStore } from "../store/authStore";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("admin@smartinvoice.com");
-  const [password, setPassword] = useState("Admin123!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -153,10 +153,6 @@ export function LoginPage() {
             </button>
           </form>
 
-          <div className="demo-access">
-            <span>Acceso de desarrollo</span>
-            <code>admin@smartinvoice.com</code>
-          </div>
         </div>
       </section>
     </main>

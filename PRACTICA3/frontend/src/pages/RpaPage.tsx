@@ -414,12 +414,16 @@ function fileName(path: string): string {
 
 function browserTargetUrl(target: string): string {
   try {
-    const url = new URL(target);
-    if (url.hostname === "api") {
-      url.hostname = window.location.hostname;
-      url.port = "8000";
+    const internalUrl = new URL(target, window.location.origin);
+    if (internalUrl.hostname === "api") {
+      // "api" solo existe dentro de Docker. El navegador debe usar Nginx,
+      // que publica la misma ruta /api/v1 desde el dominio actual.
+      return new URL(
+        `${internalUrl.pathname}${internalUrl.search}${internalUrl.hash}`,
+        window.location.origin,
+      ).toString();
     }
-    return url.toString();
+    return internalUrl.toString();
   } catch {
     return target;
   }

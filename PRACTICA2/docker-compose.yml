@@ -8,7 +8,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - smartbot_data:/data
+      - ./database:/data
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=sqlite:////data/smartbot.db
@@ -37,11 +37,10 @@ services:
       - backend
     env_file:
       - .env
+    volumes:
+      - ./database:/data
     environment:
       - API_URL=http://backend:8000
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
       - DATABASE_URL=sqlite:////data/smartbot.db
-
-volumes:
-  smartbot_data:

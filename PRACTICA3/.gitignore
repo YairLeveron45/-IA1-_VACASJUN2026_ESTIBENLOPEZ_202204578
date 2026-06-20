@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.pytest-tmp/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.env
+!*.env.example
+
+# Secrets and credentials
+secrets/
+secret/
+credentials/
+credentials*.json
+service-account*.json
+service_account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+*.asc
+*.gpg
+
+# Local databases and runtime state
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+*.pid
+*.seed
+
+# IDE and operating system
+.vscode/
+.idea/
+.fleet/
+.history/
+*.code-workspace
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Application data
+uploads/*
+!uploads/.gitkeep
+reports/*
+!reports/.gitkeep
+*.eml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Logs and diagnostics
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend
+node_modules/
+dist/
+.vite/
+.eslintcache
+
+# Local Docker overrides may contain credentials
+docker-compose.override.yml
+docker-compose.*.local.yml
+compose.override.yml
+compose.*.local.yml

@@ -1,0 +1,9 @@
+services:
+  robomaze:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: robomaze
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

@@ -1,0 +1,300 @@
+/* --- RESET GLOBAL --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* --- FONDO Y TIPOGRAFIA BASE --- */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #000;                           /* Fondo negro puro */
+    color: #e0e0e0;                             /* Texto claro */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* --- HEADER CON EFECTO GLASSMORPHISM --- */
+header {
+    width: 100%;
+    max-width: 1400px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo con gradiente violeta-azul */
+header h1 {
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header h1 span { font-weight: 700; }
+
+header p { color: rgba(255, 255, 255, 0.3); font-size: 0.85rem; letter-spacing: 1px; }
+
+/* --- LAYOUT PRINCIPAL: DOS COLUMNAS --- */
+.container {
+    max-width: 1400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1rem;
+    flex: 1;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* --- TARJETA CON EFECTO GLASSMORPHISM --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.25rem;
+}
+
+/* Titulo de tarjeta con icono SVG */
+.card-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-title svg { width: 14px; height: 14px; stroke: rgba(255, 255, 255, 0.3); stroke-width: 2; fill: none; }
+
+/* --- ESTILOS COMUNES PARA SELECTS Y BOTONES --- */
+select, button {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: #d0d0d0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+    outline: none;
+}
+
+select:hover, select:focus { border-color: rgba(167, 139, 250, 0.4); background: rgba(255, 255, 255, 0.06); }
+select option { background: #111; }
+
+/* --- BOTONES DE ACCION --- */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    border: none;
+    margin-top: 0.35rem;
+}
+
+.btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* BFS: verde */
+.btn-bfs {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.12), rgba(16, 185, 129, 0.12));
+    border: 1px solid rgba(52, 211, 153, 0.2);
+}
+.btn-bfs:hover { background: linear-gradient(135deg, rgba(52, 211, 153, 0.25), rgba(16, 185, 129, 0.25)); }
+
+/* DFS: violeta */
+.btn-dfs {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(139, 92, 246, 0.12));
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+.btn-dfs:hover { background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(139, 92, 246, 0.25)); }
+
+/* Comparar: amarillo */
+.btn-compare {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(251, 191, 36, 0.15);
+}
+.btn-compare:hover { background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2)); }
+
+/* Limpiar: rojo */
+.btn-danger {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+}
+.btn-danger:hover { background: rgba(239, 68, 68, 0.18); }
+
+/* --- BOTONES DE MODO (INICIO, DESTINO, OBSTACULO, BORRAR) --- */
+.mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+}
+
+.mode-btn {
+    font-size: 0.72rem;
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mode-btn:hover { border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); }
+.mode-btn.active { border-color: rgba(167, 139, 250, 0.5); background: rgba(167, 139, 250, 0.1); }
+
+.mode-btn svg { width: 14px; height: 14px; display: block; margin: 0 auto 0.2rem; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.mode-indicator {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.5px;
+}
+
+.mode-indicator strong { color: rgba(167, 139, 250, 0.7); }
+
+/* --- CONTENEDOR DE LA CUADRICULA --- */
+.maze-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+/* Cuadricula con CSS Grid */
+#maze-grid {
+    display: grid;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px;
+    border-radius: 8px;
+}
+
+/* --- CELDAS DEL LABERINTO --- */
+.cell {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.cell:hover { background: rgba(255, 255, 255, 0.08); }
+.cell.empty { background: rgba(255, 255, 255, 0.03); }
+.cell.obstacle { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.06); }
+.cell.start { background: rgba(251, 146, 60, 0.6); }       /* Naranja */
+.cell.end { background: rgba(239, 68, 68, 0.6); }          /* Rojo */
+.cell.explored { background: rgba(255, 255, 255, 0.07); }  /* Gris explorado */
+.cell.path-bfs { background: rgba(52, 211, 153, 0.5); }    /* Verde BFS */
+.cell.path-dfs { background: rgba(168, 85, 247, 0.5); }    /* Violeta DFS */
+.cell.path-bfs.path-dfs { background: rgba(251, 191, 36, 0.5); }  /* Amarillo donde coinciden */
+
+/* --- LEYENDA DE COLORES --- */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    margin-top: 0.6rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+/* --- PANEL DE RESULTADOS (BFS Y DFS LADO A LADO) --- */
+.results-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.result-card {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    display: none;
+    min-height: 120px;
+}
+
+.result-card.visible { display: block; }
+
+.result-card h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.3px;
+}
+
+.result-card.bfs h3 { color: rgba(52, 211, 153, 0.7); }   /* Titulo BFS verde */
+.result-card.dfs h3 { color: rgba(168, 85, 247, 0.7); }   /* Titulo DFS violeta */
+
+.result-card .stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.2rem 0;
+    font-size: 0.72rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.result-card .stat:last-child { border-bottom: none; }
+
+.stat-label { color: rgba(255, 255, 255, 0.3); }
+.stat-value { color: rgba(255, 255, 255, 0.7); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.grid-info {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.2);
+    margin-top: 0.4rem;
+    text-align: center;
+}
+
+/* --- FOOTER --- */
+footer {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.12);
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+}

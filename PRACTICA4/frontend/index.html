@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboMaze — BFS & DFS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1><span>Robo</span>Maze</h1>
+        <p>BFS · DFS · Inteligencia Artificial</p>
+    </header>
+
+    <div class="container">
+        <div class="left-column">
+            <div class="glass-card">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V3h12l1 6-1 6H4"/><path d="M16 15h4l1 3-1 3h-4"/></svg>
+                    Laberintos
+                </div>
+                <select id="maze-select"></select>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Edición
+                </div>
+                <div class="mode-grid">
+                    <button class="mode-btn" data-mode="start" id="mode-start">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" fill="none"/></svg>
+                        Inicio
+                    </button>
+                    <button class="mode-btn" data-mode="end" id="mode-end">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V3h12l1 6-1 6H4"/></svg>
+                        Destino
+                    </button>
+                    <button class="mode-btn" data-mode="obstacle" id="mode-obstacle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" fill="none"/></svg>
+                        Obstáculo
+                    </button>
+                    <button class="mode-btn" data-mode="erase" id="mode-erase">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7l-4-4 9-9 8 8-4 4z"/><path d="M6.5 13.5l8-8"/></svg>
+                        Borrar
+                    </button>
+                </div>
+                <div class="mode-indicator" id="current-mode"><strong>Colocar inicio</strong> (naranja)</div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,7 12,12 2,7"/><polygon points="2,12 12,17 22,12"/></svg>
+                    Algoritmos
+                </div>
+                <button class="btn btn-bfs" id="btn-bfs">
+                    <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+                    BFS
+                </button>
+                <button class="btn btn-dfs" id="btn-dfs">
+                    <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+                    DFS
+                </button>
+                <button class="btn btn-compare" id="btn-compare">
+                    <svg viewBox="0 0 24 24"><polygon points="12,2 22,7 12,12 2,7"/><polygon points="2,12 12,17 22,12"/></svg>
+                    Comparar BFS vs DFS
+                </button>
+                <button class="btn btn-danger" id="btn-clear">
+                    <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+                    Limpiar
+                </button>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="glass-card" style="flex:1">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Laberinto <span style="color:rgba(255,255,255,0.3);font-weight:400;" id="grid-size">8 × 8</span>
+                </div>
+                <div class="maze-wrapper">
+                    <div id="maze-grid"></div>
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(255,255,255,0.04)"></div> Vacío</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(0,0,0,0.4)"></div> Obstáculo</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(251,146,60,0.7)"></div> Inicio</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(239,68,68,0.7)"></div> Destino</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(255,255,255,0.1)"></div> Explorado</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(52,211,153,0.6)"></div> BFS</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(168,85,247,0.6)"></div> DFS</div>
+                        <div class="legend-item"><div class="legend-color" style="background:rgba(251,191,36,0.6)"></div> BFS+DFS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,7 12,12 2,7"/><polygon points="2,12 12,17 22,12"/></svg>
+                    Resultados
+                </div>
+                <div class="results-row">
+                    <div class="result-card bfs" id="bfs-result">
+                        <h3><svg viewBox="0 0 24 24" style="width:12px;height:12;fill:none;stroke:currentColor;vertical-align:middle;margin-right:4px;"><polygon points="6,4 20,12 6,20"/></svg> BFS — Breadth-First Search</h3>
+                        <div class="stat"><span class="stat-label">Ruta encontrada</span><span class="stat-value" id="bfs-found">-</span></div>
+                        <div class="stat"><span class="stat-label">Longitud</span><span class="stat-value" id="bfs-path-length">-</span></div>
+                        <div class="stat"><span class="stat-label">Nodos explorados</span><span class="stat-value" id="bfs-nodes">-</span></div>
+                        <div class="stat"><span class="stat-label">Tiempo</span><span class="stat-value" id="bfs-time">-</span></div>
+                    </div>
+                    <div class="result-card dfs" id="dfs-result">
+                        <h3><svg viewBox="0 0 24 24" style="width:12px;height:12;fill:none;stroke:currentColor;vertical-align:middle;margin-right:4px;"><polygon points="6,4 20,12 6,20"/></svg> DFS — Depth-First Search</h3>
+                        <div class="stat"><span class="stat-label">Ruta encontrada</span><span class="stat-value" id="dfs-found">-</span></div>
+                        <div class="stat"><span class="stat-label">Longitud</span><span class="stat-value" id="dfs-path-length">-</span></div>
+                        <div class="stat"><span class="stat-label">Nodos explorados</span><span class="stat-value" id="dfs-nodes">-</span></div>
+                        <div class="stat"><span class="stat-label">Tiempo</span><span class="stat-value" id="dfs-time">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>RoboMaze — Inteligencia Artificial 1 — Vacaciones Junio 2026</footer>
+    <script src="js/app.js"></script>
+</body>
+</html>

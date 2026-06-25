@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+.python-version
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+*.env.local
+*.env.*
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Project specific
+backend/__pycache__/
+backend/src/__pycache__/
+backend/src/**/__pycache__/
+
+# Docs screenshots (user generated)
+docs/screenshots/
